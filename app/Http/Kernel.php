@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\custom_auth;
+use App\Http\Middleware\not_custom_auth;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -54,6 +56,8 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+         'not_custom_auth' => not_custom_auth::class,
+        'custom_auth' => custom_auth::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,

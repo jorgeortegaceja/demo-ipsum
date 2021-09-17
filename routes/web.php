@@ -13,13 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => ['auth']], function(){
-    Route::get('/', function () {
-        return view('login');
-    });
+Route::group(['middleware' => ['custom_auth']], function(){
+    Route::post('/logout', 'AuthController@logout');
+    Route::get('/', 'ServicenowController@index');
 });
 
-
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
+Route::group(['middleware' => ['not_custom_auth']], function(){
+    Route::post('/login', 'AuthController@login');
+    Route::get('/login', 'AuthController@index')->name('login');
+});
