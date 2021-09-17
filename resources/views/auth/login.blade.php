@@ -110,7 +110,7 @@
                         return
 
                     try {
-                        let response = await axios.post('http://127.0.0.1:8000/login', this.user);
+                        let response = await axios.post('/login', this.user);
                         this.response = response.data;
                         console.log(response.data);
                         window.location.reload();
