@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-class ServicenowController extends Controller
+class RiskManagementController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,19 @@ class ServicenowController extends Controller
      */
     public function index()
     {
-        return view('welcome')->with('settings', session('authenticated'));
+        $url = 'https://elastic:x5tu4F6aXabmLEy5WYiQrlx4@demo-ipsum.es.eastus2.azure.elastic-cloud.com:9243';
+        $response = Http::withHeaders([
+                                'Content-Type' => 'application/json',
+                    ])->get("$url/risks/_search",[
+                        "size"=> 100, //default 10
+                        "from"=> 0, //default 0
+                        "query"=>
+                        [
+                            "match_all" => []
+                        ]
+                    ]);
+
+        return response()->json(json_decode($response->body())->hits->hits);
     }
 
     /**

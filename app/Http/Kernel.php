@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\cors;
 use App\Http\Middleware\custom_auth;
 use App\Http\Middleware\not_custom_auth;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -43,8 +44,8 @@ class Kernel extends HttpKernel
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            'throttle:api',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            // cors::class
+            // \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
 
@@ -56,7 +57,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-         'not_custom_auth' => not_custom_auth::class,
+        'not_custom_auth' => not_custom_auth::class,
         'custom_auth' => custom_auth::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
