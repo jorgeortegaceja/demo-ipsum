@@ -30,7 +30,7 @@ Route::group(['middleware' => ['custom_auth']], function(){
     Route::resource('/risk', 'RiskManagementController');
 });
 
-// Route::group(['middleware' => ['not_custom_auth']], function(){
+Route::group(['middleware' => ['not_custom_auth']], function(){
 //     Route::post('/login', 'AuthController@login');
-//     Route::get('/login', 'AuthController@index')->name('login');
-// });
+    Route::get('/login', 'AuthController@index')->name('login');
+});
