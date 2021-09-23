@@ -109,10 +109,21 @@
         </v-card-text>
 
         <v-card-actions class="justify-center">
-          <v-btn outlined color="error darken-1" @click="close">
+          <v-btn
+            outlined
+            :disabled="loading"
+            color="error darken-1"
+            @click="close"
+          >
             Cancelar
           </v-btn>
-          <v-btn outlined color="success darken-1" @click="save">
+          <v-btn
+            :disabled="loading"
+            :loading="loading"
+            outlined
+            color="success darken-1"
+            @click="save"
+          >
             Guardar
           </v-btn>
         </v-card-actions>
@@ -128,6 +139,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       records: {},
       dialog: false,
       dialogDelete: false,
@@ -274,12 +286,26 @@ export default {
       });
     },
 
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
-      } else {
-        this.desserts.push(this.editedItem);
+    async save() {
+      try {
+        this.loading = true;
+        console.log(this.editedItem);
+        let response = await this.$axios.patch(
+          `/risks/${this.editedItem._source.sys_id}`,
+          {
+            ...this.editedItem
+          }
+        );
+
+        if (this.editedIndex > -1) {
+          Object.assign(this.desserts[this.editedIndex], this.editedItem);
+        } else {
+          this.desserts.push(this.editedItem);
+        }
+      } catch (error) {
+        console.log(error);
       }
+
       this.close();
     }
   },

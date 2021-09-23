@@ -58,6 +58,7 @@ class RiskManagementController extends Controller
      */
     public function show($id)
     {
+
         //
     }
 
@@ -69,7 +70,7 @@ class RiskManagementController extends Controller
      */
     public function edit($id)
     {
-        //
+
     }
 
     /**
@@ -81,7 +82,17 @@ class RiskManagementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $_request =  Http::withBasicAuth('demo.ipsum', 'Ipsum.2021')
+                        ->withHeaders([
+                            'Accept' => 'application/json',
+                            'Content-Type' => 'application/json'
+                        ])
+                        ->patch(
+                            "https://daviviendagrcdemo.service-now.com/api/now/v2/table/sn_risk_risk/$id",
+                            $request->_source
+                    );
+
+         return response()->json($_request->body());
     }
 
     /**

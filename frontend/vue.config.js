@@ -2,6 +2,7 @@ module.exports = {
     transpileDependencies: [
         'vuetify'
     ],
+
     configureWebpack: {
         resolve: {
             extensions: ['.js', '.vue', '.json'],
