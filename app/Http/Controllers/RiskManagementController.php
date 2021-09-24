@@ -18,7 +18,7 @@ class RiskManagementController extends Controller
         $response = Http::withHeaders([
                                 'Content-Type' => 'application/json',
                     ])->get("$url/risks/_search",[
-                        "size"=> 100, //default 10
+                        "size"=> 1000, //default 10
                         "from"=> 0, //default 0
                         "query"=>
                         [
@@ -47,7 +47,31 @@ class RiskManagementController extends Controller
      */
     public function store(Request $request)
     {
-        //
+          $source = [];
+        foreach ($request->_source as $key => $value) {
+            if(is_array($value)){
+                if(array_key_exists('sys_id', $value) && $value['sys_id']  !== null){
+                    $source[$key] =  $value['sys_id'];
+                }
+            }else{
+                if($value != null)
+                 $source['u_'.$key] =  $value;
+            }
+        }
+
+
+
+         $response = Http::withBasicAuth('demo.ipsum', 'Rick.C137')->
+            withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post(
+                "https://daviviendagrcdemo.service-now.com/api/now/table/u_imp_tmpl_sn_risk_risk",
+                $source
+
+            );
+        return response()->json(json_decode($response->body()));
+
+
     }
 
     /**
@@ -56,10 +80,15 @@ class RiskManagementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, $table, $query)
     {
-
-        //
+       $response = Http::withBasicAuth('demo.ipsum', 'Rick.C137')->
+            withHeaders([
+                'Content-Type' => 'application/json',
+            ])->get(
+                "https://daviviendagrcdemo.service-now.com/api/now/table/$table?sysparm_query=$query$id&sysparm_limit=10"
+            );
+        return response()->json(json_decode($response->body()));
     }
 
     /**
@@ -82,14 +111,25 @@ class RiskManagementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $_request =  Http::withBasicAuth('demo.ipsum', 'Ipsum.2021')
+        $source = [];
+        foreach ($request->_source as $key => $value) {
+            if(is_array($value)){
+                if($value['sys_id']  !== null){
+                    $source[$key] =  $value['sys_id'];
+                }
+            }else{
+                 $source[$key] =  $value;
+            }
+        }
+
+        $_request =  Http::withBasicAuth('demo.ipsum', 'Rick.C137')
                         ->withHeaders([
                             'Accept' => 'application/json',
                             'Content-Type' => 'application/json'
                         ])
                         ->patch(
                             "https://daviviendagrcdemo.service-now.com/api/now/v2/table/sn_risk_risk/$id",
-                            $request->_source
+                        $source
                     );
 
          return response()->json($_request->body());

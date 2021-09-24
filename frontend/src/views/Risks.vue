@@ -20,11 +20,20 @@
           >
             Crear nuevo riesgo
           </v-btn>
+          <v-btn
+            text
+            color="primary"
+            dark
+            class="mb-2"
+            @click.stop="initialize"
+          >
+            Recargar informacion
+          </v-btn>
         </v-toolbar>
       </template>
       <template v-slot:item.actions="{ item }">
         <v-icon smallclass="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-        <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+        <!-- <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon> -->
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">
@@ -289,23 +298,27 @@ export default {
     async save() {
       try {
         this.loading = true;
-        console.log(this.editedItem);
-        let response = await this.$axios.patch(
-          `/risks/${this.editedItem._source.sys_id}`,
-          {
-            ...this.editedItem
-          }
-        );
-
+        console.log(this.editedIndex);
         if (this.editedIndex > -1) {
           Object.assign(this.desserts[this.editedIndex], this.editedItem);
+          let response = await this.$axios.patch(
+            `/risks/${this.editedItem._source.sys_id}`,
+            {
+              ...this.editedItem
+            }
+          );
         } else {
+          let response = await this.$axios.post(`/risks`, {
+            ...this.editedItem
+          });
           this.desserts.push(this.editedItem);
         }
+        // this.initialize();
       } catch (error) {
         console.log(error);
       }
 
+      this.loading = false;
       this.close();
     }
   },

@@ -61,95 +61,136 @@
     </v-row>
     <v-row justify="center" class="pb-0">
       <v-col cols="12" sm="4" class="py-0">
-        <v-text-field
-          v-model="editedItem._source.statement.name"
-          :disabled="deleted"
+        <v-autocomplete
+          v-model="editedItem._source.statement"
+          :items="items"
+          item-text="name"
+          :loading="isLoading"
+          cache-items
+          :search-input.sync="search"
+          hide-no-data
+          hide-selected
           label="Declaración de riesgos"
-          outlined
-          dense
-          append-icon="mdi-arrow-expand"
-          @click:append="show1 = !show1"
-        ></v-text-field>
+          return-object
+        ></v-autocomplete>
       </v-col>
       <v-col cols="12" sm="4" class="py-0" offset-sm="1">
-        <v-text-field
-          v-model="editedItem._source.profile.name"
-          :disabled="deleted"
-          label="Grupo de propietarios"
-          outlined
-          dense
-          append-icon="mdi-arrow-expand"
-          @click:append="show1 = !show1"
-        ></v-text-field>
+        <v-autocomplete
+          v-model="editedItem._source.profile"
+          :items="items2"
+          item-text="name"
+          :loading="isLoading2"
+          cache-items
+          :search-input.sync="search2"
+          hide-no-data
+          hide-selected
+          label="Entidad"
+          return-object
+        ></v-autocomplete>
       </v-col>
     </v-row>
-    <v-row justify="center" class="pb-0">
-      <v-col cols="12" sm="4" class="py-0">
-        <v-text-field
-          v-model="editedItem._source.category.name"
-          :disabled="deleted"
-          label="Categoria"
-          outlined
-          dense
-          append-icon="mdi-arrow-expand"
-          @click:append="show1 = !show1"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" sm="4" class="py-0" offset-sm="1"></v-col>
-    </v-row>
-
-    <v-row justify="center" class="pb-0">
-      <v-col cols="12" sm="4" class="py-0">
-        <v-text-field
-          v-model="editedItem._source.owning_group.name"
-          :disabled="deleted"
-          dense
-          label="Grupo de propietarios"
-          outlined
-          append-icon="mdi-arrow-expand"
-          @click:append="show1 = !show1"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" sm="4" class="py-0" offset-sm="1">
-        <v-text-field
-          v-model="editedItem._source.owner.first_name"
-          :disabled="deleted"
-          dense
-          label="Propietario"
-          outlined
-          append-icon="mdi-arrow-expand"
-          @click:append="show1 = !show1"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <pre>{{ deleted }}</pre>
-    <v-dialog
-      transition="dialog-bottom-transition"
-      max-width="600"
-      v-model="show1"
-    >
-      <template v-slot:default="dialog">
-        <v-card>
-          <v-toolbar color="primary" dark>Opening from the bottom</v-toolbar>
-          <v-card-text>
-            <div class="text-h2 pa-12">Hello world!</div>
-          </v-card-text>
-          <v-card-actions class="justify-end">
-            <v-btn text @click="dialog.value = false">Close</v-btn>
-          </v-card-actions>
-        </v-card>
-      </template>
-    </v-dialog>
   </v-form>
 </template>
 <script>
+import SearchField from "./FielSearch.vue";
 export default {
   props: ["editedItem", "editedIndex", "deleted"],
   data: () => ({
-    show1: false
+    show1: false,
+    items: [],
+    isLoading: false,
+    search: null,
+    items2: [],
+    isLoading2: false,
+    search2: null,
+    items3: [],
+    isLoading3: false,
+    search3: null
   }),
+  components: {
+    SearchField
+  },
   mounted() {
+    this.items.push(this.editedItem._source.statement);
+    this.items2.push(this.editedItem._source.profile);
+    this.items3.push(this.editedItem._source.category);
     this.editedItem._source.state = "Borrador";
+  },
+
+  watch: {
+    async search(val) {
+      this.items = [];
+      this.isLoading = true;
+      try {
+        let response = await this.$axios.get(
+          `/risks/${val}/sn_risk_definition/active%3Dtrue%5EnameSTARTSWITH`
+        );
+        for (const i in response.data.result) {
+          this.items.push({
+            sys_id: response.data.result[i].sys_id,
+            name: response.data.result[i].name,
+            category: response.data.result[i].category,
+            description: response.data.result[i].description,
+            additional_information:
+              response.data.result[i].additional_information
+          });
+        }
+        this.isLoading = false;
+      } catch (error) {
+        console.log(error);
+        this.isLoading = false;
+      }
+    },
+    async search2(val) {
+      this.items2 = [];
+      this.isLoadings2 = true;
+      try {
+        let response = await this.$axios.get(
+          `/risks/${val}/sn_grc_profile/active=true^nameSTARTSWITH`
+        );
+        for (const i in response.data.result) {
+          this.items2.push({
+            sys_id: response.data.result[i].sys_id,
+            name: response.data.result[i].name,
+            category: response.data.result[i].category,
+            description: response.data.result[i].description,
+            refers_to_existing_table:
+              response.data.result[i].refers_to_existing_table,
+
+            active: response.data.result[i].active
+          });
+        }
+        this.isLoading2 = false;
+      } catch (error) {
+        console.log(error);
+        this.isLoading2 = false;
+      }
+    },
+    async search3(val) {
+      this.items3 = [];
+      this.isLoadings3 = true;
+      try {
+        let response = await this.$axios.get(
+          `/risks/${val}/sn_grc_profile/active=true^nameSTARTSWITH`
+        );
+        for (const i in response.data.result) {
+          this.items3.push({
+            sys_id: response.data.result[i].sys_id,
+            name: response.data.result[i].name,
+            category: response.data.result[i].category,
+            description: response.data.result[i].description,
+            refers_to_existing_table:
+              response.data.result[i].refers_to_existing_table,
+
+            active: response.data.result[i].active
+          });
+        }
+        this.isLoading3 = false;
+      } catch (error) {
+        console.log(error);
+        this.isLoading3 = false;
+      }
+    }
   }
 };
 </script>
