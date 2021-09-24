@@ -51,7 +51,7 @@ class RiskManagementController extends Controller
         foreach ($request->_source as $key => $value) {
             if(is_array($value)){
                 if(array_key_exists('sys_id', $value) && $value['sys_id']  !== null){
-                    $source[$key] =  $value['sys_id'];
+                    $source['u_'.$key] =  $value['sys_id'];
                 }
             }else{
                 if($value != null)
