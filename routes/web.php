@@ -27,7 +27,7 @@ Route::group(['middleware' => ['custom_auth']], function(){
     //     });
     // });
 
-    Route::resource('/risk', function(){
+    Route::resource('/risks', function(){
         return view('welcome');
     });
 });
