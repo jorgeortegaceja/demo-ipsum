@@ -27,7 +27,7 @@ Route::group(['middleware' => ['custom_auth']], function(){
     //     });
     // });
 
-    // Route::resource('/risk', 'RiskManagementController');
+    Route::resource('/risk', 'RiskManagementController');
 });
 
 Route::group(['middleware' => ['not_custom_auth']], function(){
