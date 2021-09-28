@@ -28,7 +28,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
 
-        $url = 'https://elastic:x5tu4F6aXabmLEy5WYiQrlx4@demo-ipsum.es.eastus2.azure.elastic-cloud.com:9243';
+        $url = 'https://elastic:NGq9UhJBIxKn8JuzNFGl0p4A@demo2-template.es.eastus2.azure.elastic-cloud.com:9243';
 
         $response =  Http::get("$url/users/_search?q=*". $request->email);
 
@@ -61,7 +61,7 @@ class AuthController extends Controller
             'token' => Str::random(90),
             'expires_at' => now()->addHours(8)
         ];
-        $url = 'https://elastic:x5tu4F6aXabmLEy5WYiQrlx4@demo-ipsum.es.eastus2.azure.elastic-cloud.com:9243';
+        $url = 'https://elastic:NGq9UhJBIxKn8JuzNFGl0p4A@demo2-template.es.eastus2.azure.elastic-cloud.com:9243';
         $response =  Http::withHeaders([
                                 'Content-Type' => 'application/json',
                     ])
@@ -109,7 +109,7 @@ class AuthController extends Controller
 
 
     public function updateNavigation(Request $request){
-        $url = 'https://elastic:x5tu4F6aXabmLEy5WYiQrlx4@demo-ipsum.es.eastus2.azure.elastic-cloud.com:9243';
+        $url = 'https://elastic:NGq9UhJBIxKn8JuzNFGl0p4A@demo2-template.es.eastus2.azure.elastic-cloud.com:9243';
         $response =  Http::withHeaders([
                                 'Content-Type' => 'application/json',
                             ])

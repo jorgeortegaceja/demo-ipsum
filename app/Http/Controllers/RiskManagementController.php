@@ -14,7 +14,8 @@ class RiskManagementController extends Controller
      */
     public function index()
     {
-        $url = 'https://elastic:x5tu4F6aXabmLEy5WYiQrlx4@demo-ipsum.es.eastus2.azure.elastic-cloud.com:9243';
+        $url = 'https://elastic:NGq9UhJBIxKn8JuzNFGl0p4A@demo2-template.es.eastus2.azure.elastic-cloud.com:9243
+';
         $response = Http::withHeaders([
                                 'Content-Type' => 'application/json',
                     ])->get("$url/risks/_search",[
