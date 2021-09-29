@@ -21,6 +21,7 @@ Route::group(['prefix' => 'auth'], function($auth){
 });
 
 Route::group([], function($risk){
+    $risk->get('/risks/message','RiskManagementController@websocket');
     $risk->get('/risks/{id}/{table}/{query}', 'RiskManagementController@show');
     $risk->resource('/risks', 'RiskManagementController');
 });

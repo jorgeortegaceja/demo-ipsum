@@ -138,16 +138,33 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <input id="websoket" type="hidden" v-model="websoket" />
   </v-container>
 </template>
 <script>
 import FromRisks from "../components/Forms/RisksForm.vue";
+import Pusher from "pusher-js";
+import { debounce } from "lodash";
 export default {
   created() {
+    // Pusher.logToConsole = true;
+    var pusher = new Pusher("61c1844669dfbabd6be5", {
+      cluster: "us2"
+    });
+
+    var channel = pusher.subscribe("my-channel");
+
+    channel.bind("my-event", function(data) {
+      document.getElementById("websoket").value = data.message;
+      document.getElementById("websoket").dispatchEvent(new Event("input"));
+    });
+
     this.initialize();
   },
+
   data() {
     return {
+      websoket: "",
       loading: false,
       records: {},
       dialog: false,
@@ -166,6 +183,10 @@ export default {
         {
           text: "Nombre",
           value: "_source.name"
+        },
+        {
+          text: "Entidad",
+          value: "_source.profile.name"
         },
         {
           text: "Descripción",
@@ -239,6 +260,12 @@ export default {
   },
 
   watch: {
+    websoket: debounce(function(newValue) {
+      if (newValue != "") {
+        this.websoket = "";
+        this.initialize();
+      }
+    }, 800),
     dialog(val) {
       val || this.close();
     },
@@ -322,6 +349,7 @@ export default {
       this.close();
     }
   },
+
   components: {
     FromRisks
   }

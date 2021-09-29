@@ -34,9 +34,15 @@ class RiskManagementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function websocket()
     {
-        //
+        event(
+            new \App\Events\MyEvent('update')
+        );
+
+        return response()->json([
+            'message' => "success"
+        ]);
     }
 
     /**
