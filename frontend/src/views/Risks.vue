@@ -281,7 +281,7 @@ export default {
     async initialize() {
       try {
         let response = await this.$axios.get("/risks");
-        this.desserts = response.data;
+        this.desserts = response.data.reverse();
       } catch (error) {
         console.log(error);
       }
